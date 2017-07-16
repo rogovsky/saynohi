@@ -15,9 +15,10 @@ FIELD_TOKEN = "token"
 FIELD_CHALLENGE = "challenge"
 FIELD_EVENT = "event"
 
-TYPE_MESSAGE = "message"
-TYPE_URL_VERIFICATION = "url_verification"
+REQ_TYPE_URL_VERIFICATION = "url_verification"
+REQ_TYPE_MESSAGE = "event_callback"
 
+EVENT_TYPE_MESSAGE = "message"
 
 class UnsupportedRequestException(BaseException):
     pass
@@ -48,16 +49,24 @@ def webhook():
 
 def process_request(req):
     request_type = req.get(FIELD_TYPE)
-    if request_type == TYPE_URL_VERIFICATION:
+    if request_type == REQ_TYPE_URL_VERIFICATION:
         return process_handshake_request(req)
-    elif request_type == TYPE_MESSAGE:
+    elif request_type == REQ_TYPE_MESSAGE:
         return process_event_request(req)
     else:
         raise UnsupportedRequestException
 
 
 def process_event_request(req):
-    return {"data": "empty"}
+    event = req.get(FIELD_EVENT)
+    if event.get(FIELD_TYPE) == EVENT_TYPE_MESSAGE:
+        process_users_message(event)
+    return {}
+
+
+def process_users_message(message_event):
+    sender = message_event.get("user")
+    text = message_event.get("text")
 
 
 def process_handshake_request(req):
