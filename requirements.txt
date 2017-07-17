@@ -1,2 +1,3 @@
 slacker
+cached_property
 Flask==0.12
