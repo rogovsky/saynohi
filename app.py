@@ -7,18 +7,19 @@ from flask import Flask
 from flask import request
 from flask import make_response
 
-# Flask app should start in global layout
-app = Flask(__name__)
+from message_processor import MessageProcessor
 
 FIELD_TYPE = "type"
 FIELD_TOKEN = "token"
 FIELD_CHALLENGE = "challenge"
-FIELD_EVENT = "event"
 
 REQ_TYPE_URL_VERIFICATION = "url_verification"
-REQ_TYPE_MESSAGE = "event_callback"
+REQ_TYPE_EVENT = "event_callback"
 
-EVENT_TYPE_MESSAGE = "message"
+
+message_processor = MessageProcessor()
+app = Flask(__name__) # Flask app should start in global layout
+
 
 class UnsupportedRequestException(BaseException):
     pass
@@ -31,7 +32,6 @@ def webhook():
     print("Got Request:")
     print(json.dumps(req, indent=4))
 
-    response = None
     try:
         raw_response = json.dumps(process_request(req))
         print("Responding:", raw_response)
@@ -51,22 +51,15 @@ def process_request(req):
     request_type = req.get(FIELD_TYPE)
     if request_type == REQ_TYPE_URL_VERIFICATION:
         return process_handshake_request(req)
-    elif request_type == REQ_TYPE_MESSAGE:
+    elif request_type == REQ_TYPE_EVENT:
         return process_event_request(req)
     else:
         raise UnsupportedRequestException
 
 
 def process_event_request(req):
-    event = req.get(FIELD_EVENT)
-    if event.get(FIELD_TYPE) == EVENT_TYPE_MESSAGE:
-        process_users_message(event)
+    message_processor.process(req)
     return {}
-
-
-def process_users_message(message_event):
-    sender = message_event.get("user")
-    text = message_event.get("text")
 
 
 def process_handshake_request(req):
