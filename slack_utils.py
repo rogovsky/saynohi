@@ -1,7 +1,12 @@
 from slacker import Slacker
 from slacker import Error
 
-slacker = Slacker("API KEY HERE")
+slacker = None
+
+
+def init(api_key):
+    global slacker
+    slacker = Slacker(api_key)
 
 
 def send_message(user_id, text):
@@ -17,4 +22,5 @@ def send_message(user_id, text):
 
 
 def get_slack_user_by_id(user_id):
+    global slacker
     return slacker.users.info(user_id).body['user']

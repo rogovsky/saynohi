@@ -7,15 +7,16 @@ from flask import Flask
 from flask import request
 from flask import make_response
 
+import slack_utils
 from message_processor import MessageProcessor
 
+CONFIG_FILE_PATH = "./env/config.txt"
 FIELD_TYPE = "type"
 FIELD_TOKEN = "token"
 FIELD_CHALLENGE = "challenge"
 
 REQ_TYPE_URL_VERIFICATION = "url_verification"
 REQ_TYPE_EVENT = "event_callback"
-
 
 message_processor = MessageProcessor()
 app = Flask(__name__) # Flask app should start in global layout
@@ -69,6 +70,13 @@ def process_handshake_request(req):
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 5000))
 
-    print("Starting app on port %d" % port)
+    slack_api_key = os.getenv('SLACK_API_KEY', None)
+    if slack_api_key is None and os.path.exists(CONFIG_FILE_PATH):
+        with open(CONFIG_FILE_PATH) as f:
+            slack_api_key = f.readline().strip()
 
+    print("Slack API %s" % slack_api_key)
+    slack_utils.init(slack_api_key)
+
+    print("Starting app on port %d" % port)
     app.run(debug=False, port=port, host='0.0.0.0')
