@@ -48,7 +48,7 @@ class TestApp(unittest.TestCase):
     @staticmethod
     def process_request(req_string):
         req = json.loads(req_string)
-        return app.process_request(req)
+        return app.process_event_api_request(req)
 
 if __name__ == "__main__":
     unittest.main()

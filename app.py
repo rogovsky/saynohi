@@ -7,10 +7,10 @@ from flask import Flask
 from flask import request
 from flask import make_response
 
+import configuration
 import slack_utils
 from message_processor import MessageProcessor
 
-CONFIG_FILE_PATH = "./env/config.txt"
 FIELD_TYPE = "type"
 FIELD_TOKEN = "token"
 FIELD_CHALLENGE = "challenge"
@@ -29,14 +29,13 @@ class UnsupportedRequestException(BaseException):
 @app.route('/webhook', methods=['POST', 'GET'])
 def webhook():
     req = request.get_json(silent=True, force=True)
-
-    print("Got Request:")
-    print(json.dumps(req, indent=4))
+    print("Got Request:", json.dumps(req, indent=4))
 
     try:
-        raw_response = json.dumps(process_request(req))
-        print("Responding:", raw_response)
-        response = make_response(raw_response)
+        response_body_json = process_event_api_request(req)
+        response_body = json.dumps(response_body_json)
+        print("Responding:", response_body)
+        response = make_response(response_body)
         response.headers['Content-Type'] = 'application/json'
     except UnsupportedRequestException:
         print("UnsupportedRequestException:", req)
@@ -48,7 +47,7 @@ def webhook():
     return response
 
 
-def process_request(req):
+def process_event_api_request(req):
     request_type = req.get(FIELD_TYPE)
     if request_type == REQ_TYPE_URL_VERIFICATION:
         return process_handshake_request(req)
@@ -68,15 +67,10 @@ def process_handshake_request(req):
 
 
 if __name__ == '__main__':
+    configuration.load()
+    print("Slack API %s" % configuration.slack_personal_api_key)
+    slack_utils.init(configuration.slack_personal_api_key)
+
     port = int(os.getenv('PORT', 5000))
-
-    slack_api_key = os.getenv('SLACK_API_KEY', None)
-    if slack_api_key is None and os.path.exists(CONFIG_FILE_PATH):
-        with open(CONFIG_FILE_PATH) as f:
-            slack_api_key = f.readline().strip()
-
-    print("Slack API %s" % slack_api_key)
-    slack_utils.init(slack_api_key)
-
     print("Starting app on port %d" % port)
     app.run(debug=False, port=port, host='0.0.0.0')
