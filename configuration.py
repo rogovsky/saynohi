@@ -38,7 +38,7 @@ def __load_by_name(var_name, config_file_path):
     return result
 
 
-def __get_json_config(config_file_path, json_config={}): # use default value as caching here
+def __get_json_config(config_file_path, json_config={}):  # use default value as caching here
     if len(json_config) == 0 and os.path.exists(config_file_path):
         try:
             with open(config_file_path, 'r') as f:

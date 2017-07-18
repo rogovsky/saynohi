@@ -15,7 +15,9 @@ class MessageProcessor:
         if event.is_incoming:
             print("Got it :", event.text)
             text = event.text.strip().lower()
-            if text == "hi" or text == "hello" or text == "hi!" or text == "hello!" or text == "привет"\
+            if text == "hi" or text == "hi!" or text == "hello" or text == "hello!"\
+                    or text == "greetings!" or text == "he there!" or text == "hi there" \
+                    or text == "привет!" or text == "привет" or text == "здарова" or text == "здорово"\
                     or "".startswith("i searched for that on our help center"):
                 self.add_event_to_queue(event)
 
