@@ -1,3 +1,4 @@
+httplib2
 slacker
 cached_property
 Flask==0.12
