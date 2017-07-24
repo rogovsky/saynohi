@@ -11,7 +11,7 @@ class MessageEvent:
     @staticmethod
     def is_message_event(event_json):
         event = event_json.get(FIELD_EVENT)
-        return event.get(FIELD_TYPE) == EVENT_TYPE_MESSAGE
+        return event and event.get(FIELD_TYPE) == EVENT_TYPE_MESSAGE
 
     def __init__(self, event_json):
         self.event_root = event_json

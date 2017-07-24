@@ -11,8 +11,8 @@ def init(api_key):
 
 def send_message(user_id, text):
     try:
-        # slacker.chat.post_message(user_id, #uncomment once we debug everything
         slacker.chat.post_message("USLACKBOT",
+        # slacker.chat.post_message(user_id, #uncomment once we debug everything
                                   text,
                                   as_user=True)
         user_info = get_slack_user_by_id(user_id)
