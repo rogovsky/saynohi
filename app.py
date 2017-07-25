@@ -5,6 +5,7 @@ import json
 from urllib.parse import urlencode
 
 from flask import Flask
+from flask import redirect
 from flask import request
 from flask import make_response
 import httplib2
@@ -12,6 +13,8 @@ import httplib2
 import configuration
 import slack_utils
 from message_processor import MessageProcessor
+
+SAYNOHI_HOMEPAGE = "https://distillery-tech.slack.com/apps/A69BQ5S2Z-say-no-hi"
 
 EVENT_API_FIELD_TYPE = "type"
 EVENT_API_FIELD_TOKEN = "token"
@@ -39,18 +42,13 @@ def webhook():
     return process_event_api_request(req)
 
 
-def error_handling_processor(func):
+def handle_errors(func):
     """Decorator for functions that take single request argument and return dict response."""
 
     def error_handling_wrapper(req):
         try:
-            # main call performed here
-            response_body_json = func(req)
-
-            response_body = json.dumps(response_body_json)
-            print("Responding:", response_body)
-            response = make_response(response_body)
-            response.headers['Content-Type'] = 'application/json'
+            response = func(req)
+            print("Responding:", response)
         except UnsupportedRequestException:
             print("UnsupportedRequestException:", req)
             response = make_response("Unsupported request %s" % req, 400)
@@ -62,7 +60,23 @@ def error_handling_processor(func):
     return error_handling_wrapper
 
 
-@error_handling_processor
+def wrap_plain_json(func):
+    """Make a proper response object of plain dict/json.
+    Wraps function that takes single request argument and return dict response"""
+    def json_wrapper(req):
+        # main call performed here
+        response_body_json = func(req)
+
+        response_body = json.dumps(response_body_json)
+        response = make_response(response_body)
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+    return json_wrapper
+
+
+@handle_errors
+@wrap_plain_json
 def process_event_api_request(req):
     request_type = req.get(EVENT_API_FIELD_TYPE)
     if request_type == EVENT_API_REQ_TYPE_URL_VERIFICATION:
@@ -89,13 +103,13 @@ def auth():
     return process_auth_request(args)
 
 
-@error_handling_processor
+@handle_errors
 def process_auth_request(args):
     code = args.get(AUTH_API_ARG_CODE)
 
     auth_response, response_content = make_auth_request(code)
     parse_auth_response(auth_response, response_content)
-    return {}
+    return redirect(SAYNOHI_HOMEPAGE, 303)
 
 
 def make_auth_request(code):
