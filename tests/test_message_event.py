@@ -11,6 +11,9 @@ class TestMessageEvent(unittest.TestCase):
         self.assertFalse(MessageEvent.is_message_event(data.valid_handshake_json))
         self.assertFalse(MessageEvent.is_message_event(data.bad_request_json))
 
+    def test_message_edited_event_not_detected(self):
+        self.assertFalse(MessageEvent.is_message_event(data.message_edited_event_json))
+
     def test_message_parsed(self):
         message = MessageEvent(data.valid_message_event_json)
 

@@ -1,8 +1,13 @@
 from cached_property import cached_property
 
-FIELD_TYPE = "type"
 FIELD_EVENT = "event"
+
+EVENT_FIELD_TYPE = "type"
 EVENT_TYPE_MESSAGE = "message"
+
+EVENT_FIELD_TEXT = "text"
+EVENT_FIELD_USER = "user"
+EVENT_FIELD_SUBTYPE = "subtype"
 
 
 class MessageEvent:
@@ -11,7 +16,10 @@ class MessageEvent:
     @staticmethod
     def is_message_event(event_json):
         event = event_json.get(FIELD_EVENT)
-        return event and event.get(FIELD_TYPE) == EVENT_TYPE_MESSAGE
+        return (event
+                and event.get(EVENT_FIELD_TYPE) == EVENT_TYPE_MESSAGE
+                and EVENT_FIELD_TEXT in event
+                and EVENT_FIELD_SUBTYPE not in event)  # no subtype means it not messages edited/deleted event
 
     def __init__(self, event_json):
         self.event_root = event_json
@@ -19,11 +27,11 @@ class MessageEvent:
 
     @cached_property
     def sender(self):
-        return self.event.get("user")
+        return self.event.get(EVENT_FIELD_USER)
 
     @cached_property
     def text(self):
-        return self.event.get("text")
+        return self.event.get(EVENT_FIELD_TEXT)
 
     @cached_property
     def auth_user(self):
