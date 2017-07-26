@@ -1,4 +1,5 @@
 import slack_utils
+from hi_detector import HiDetector
 from message_event import MessageEvent
 from threading import Timer
 
@@ -13,17 +14,13 @@ class MessageProcessor:
 
         event = MessageEvent(event_json)
         if event.is_incoming:
-            print("Got it :", event.text)
-            text = event.text.strip().lower()
-            if text == "hi" or text == "hi!" or text == "hello" or text == "hello!"\
-                    or text == "greetings!" or text == "he there!" or text == "hi there" \
-                    or text == "привет!" or text == "привет" or text == "здарова" or text == "здорово"\
-                    or "".startswith("i searched for that on our help center"):
+            print("Got incoming message :", event.text)
+            if HiDetector.is_greeting(event.text):
                 self.add_event_to_queue(event)
 
     @staticmethod
     def add_event_to_queue(event):
-        print("Added to processing")
+        print("Added to processing :", event.text)
         t = Timer(1.0,
                   slack_utils.send_message,
                   [event.sender, "Hi! How do you like <http://www.nohello.com|that>?"])
