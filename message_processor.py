@@ -26,5 +26,5 @@ class MessageProcessor:
         print("Added to processing")
         t = Timer(1.0,
                   slack_utils.send_message,
-                  [event.sender, "Hi! How do you like that?"])
+                  [event.sender, "Hi! How do you like <http://www.nohello.com|that>?"])
         t.start()

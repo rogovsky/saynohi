@@ -142,7 +142,7 @@ def parse_auth_response(auth_response, response_content):
 if __name__ == '__main__':
     configuration.load()
     print("Slack API: ***%s" % configuration.slack_personal_api_key[:4])
-    slack_utils.init(configuration.slack_personal_api_key)
+    slack_utils.init(configuration.slack_app_api_key)
 
     port = int(os.getenv('PORT', 5000))
     print("Starting app on port: %d" % port)

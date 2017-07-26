@@ -7,14 +7,16 @@ import os
 # test data
 NOT_EXISTING_CONFIG_FILE = "not existing path to the file:?"
 API_KEY = "api_key"
+APP_API_KEY = "app_api_key"
 CLIENT_ID = "client_id"
 CLIENT_SECRET = "client_secret"
 TOKEN = "token"
 TEST_CONFIG = {
     configuration.SLACK_PERSONAL_API_KEY: API_KEY,
+    configuration.SLACK_APP_API_KEY: APP_API_KEY,
     configuration.SLACK_CLIENT_ID: CLIENT_ID,
     configuration.SLACK_CLIENT_SECRET: CLIENT_SECRET,
-    configuration.SLACK_VERIFICATION_TOKEN: TOKEN
+    configuration.SLACK_VERIFICATION_TOKEN: TOKEN,
 }
 
 
@@ -45,6 +47,7 @@ class TestConfiguration(unittest.TestCase):
 
     def test_initial_values_are_empty(self):
         self.assertIsNone(configuration.slack_personal_api_key)
+        self.assertIsNone(configuration.slack_app_api_key)
         self.assertIsNone(configuration.slack_client_id)
         self.assertIsNone(configuration.slack_client_secret)
         self.assertIsNone(configuration.slack_verification_token)
@@ -66,6 +69,7 @@ class TestConfiguration(unittest.TestCase):
 
     def assert_configuration_correct(self):
         self.assertEqual(configuration.slack_personal_api_key, API_KEY)
+        self.assertEqual(configuration.slack_app_api_key, APP_API_KEY)
         self.assertEqual(configuration.slack_client_id, CLIENT_ID)
         self.assertEqual(configuration.slack_client_secret, CLIENT_SECRET)
         self.assertEqual(configuration.slack_verification_token, TOKEN)
