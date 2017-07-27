@@ -8,11 +8,11 @@ _punctuation_pattern = r"[.,:;()!?/\-\\]"
 class HiDetector:
     @staticmethod
     def is_greeting(message):
-        raw_message = HiDetector._strip_from_punctuation(message)
-        return raw_message in _known_greetings
+        pure_message = HiDetector._extract_pure_text(message)
+        return pure_message in _known_greetings
 
     @staticmethod
-    def _strip_from_punctuation(message):
+    def _extract_pure_text(message):
         (message, _) = re.subn(_punctuation_pattern,
                                "",
                                message)

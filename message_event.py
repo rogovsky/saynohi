@@ -1,13 +1,18 @@
+from datetime import datetime
+
 from cached_property import cached_property
 
+FIELD_AUTHED_USERS = "authed_users"
 FIELD_EVENT = "event"
+FIELD_TIME = "event_time"
 
 EVENT_FIELD_TYPE = "type"
 EVENT_TYPE_MESSAGE = "message"
 
+EVENT_FIELD_CHANNEL = "channel"
+EVENT_FIELD_SUBTYPE = "subtype"
 EVENT_FIELD_TEXT = "text"
 EVENT_FIELD_USER = "user"
-EVENT_FIELD_SUBTYPE = "subtype"
 
 
 class MessageEvent:
@@ -26,6 +31,10 @@ class MessageEvent:
         self.event = event_json.get(FIELD_EVENT)
 
     @cached_property
+    def channel(self):
+        return self.event.get(EVENT_FIELD_CHANNEL)
+
+    @cached_property
     def sender(self):
         return self.event.get(EVENT_FIELD_USER)
 
@@ -34,8 +43,13 @@ class MessageEvent:
         return self.event.get(EVENT_FIELD_TEXT)
 
     @cached_property
+    def time(self):
+        event_time_epoch = self.event_root.get(FIELD_TIME)
+        return datetime.fromtimestamp(event_time_epoch)
+
+    @cached_property
     def auth_user(self):
-        return self.event_root.get("authed_users")[0]
+        return self.event_root.get(FIELD_AUTHED_USERS)[0]
 
     @cached_property
     def is_incoming(self):

@@ -26,8 +26,8 @@ EVENT_API_REQ_TYPE_EVENT = "event_callback"
 AUTH_API_ARG_CODE = "code"
 AUTH_API_ARG_STATE = "state"
 
-message_processor = MessageProcessor()
 http_client = httplib2.Http(".cache")
+message_processor = MessageProcessor()
 app = Flask(__name__)  # Flask app should start in global layout
 
 
@@ -37,6 +37,7 @@ class UnsupportedRequestException(BaseException):
 
 @app.route('/webhook', methods=['POST', 'GET'])
 def webhook():
+    """Endpoint for event callbacks from slack"""
     req = request.get_json(silent=True, force=True)
     print("Got WebHook Request:", json.dumps(req, indent=4))
     return process_event_api_request(req)
@@ -44,7 +45,6 @@ def webhook():
 
 def handle_errors(func):
     """Decorator for functions that take single request argument and return dict response."""
-
     def error_handling_wrapper(req):
         try:
             response = func(req)
@@ -88,16 +88,19 @@ def process_event_api_request(req):
 
 
 def process_event_request(req):
+    """Process even received request from Slack Events API"""
     message_processor.process(req)
     return {}
 
 
 def process_handshake_request(req):
+    """Process handshake request from Slack Events API"""
     return {"challenge": req.get(EVENT_API_FIELD_CHALLENGE)}
 
 
 @app.route('/auth', methods=['POST', 'GET'])
 def auth():
+    """Endpoint for Slack OAuth"""
     args = request.args
     print("Got Auth Args: %s" % args)
     return process_auth_request(args)
@@ -105,14 +108,17 @@ def auth():
 
 @handle_errors
 def process_auth_request(args):
+    """Process slack OAuth call (1 step that gives us code to proceed)"""
     code = args.get(AUTH_API_ARG_CODE)
 
-    auth_response, response_content = make_auth_request(code)
+    auth_response, response_content = make_oauth_request(code)
     parse_auth_response(auth_response, response_content)
     return redirect(SAYNOHI_HOMEPAGE, 303)
 
 
-def make_auth_request(code):
+def make_oauth_request(code):
+    """Authenticate on slack
+    Make request with oauth code to confirm authentication and get access token"""
     if code is None:
         raise UnsupportedRequestException
     answer_args = urlencode({
@@ -141,9 +147,8 @@ def parse_auth_response(auth_response, response_content):
 
 if __name__ == '__main__':
     configuration.load()
-    print("Slack API: ***%s" % configuration.slack_personal_api_key[:4])
-    slack_utils.init(configuration.slack_app_api_key)
-
     port = int(os.getenv('PORT', 5000))
-    print("Starting app on port: %d" % port)
+
+    slack_utils.init(configuration.slack_app_api_key)
+    message_processor.start_processing()
     app.run(debug=False, port=port, host='0.0.0.0')
