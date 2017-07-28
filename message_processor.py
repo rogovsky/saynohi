@@ -25,7 +25,7 @@ class ProcessingThread(Thread):
         while True:
             ticket = self._queue_manager.get_next_ticket()
             self._sleep_till_time_to_proceed(ticket)
-            self._processor.proceed_with_ticket(ticket)
+            self._processor.process_ticket(ticket)
 
     @staticmethod
     def _sleep_till_time_to_proceed(ticket):
@@ -46,7 +46,7 @@ class MessageProcessor:
         self._processor = ProcessingThread(self, self._queue_manager)
         self._processor.start()
 
-    def process_event(self, event_json):
+    def process_incoming_event(self, event_json):
         """@:param message_event json representing slack message.im event"""
         if not MessageEvent.is_message_event(event_json):
             return
@@ -56,9 +56,9 @@ class MessageProcessor:
         if HiDetector.is_greeting(event.text):
             self._queue_manager.add(Ticket.of_event(event), event)
 
-    def proceed_with_ticket(self, ticket):
+    def process_ticket(self, ticket):
         """Process ticket related to handled Hi message, if it's not voided sender should receive his punishment"""
-        event = self._queue_manager.get_item(ticket)
+        event = self._queue_manager.pop_item(ticket)
         if event:
             self._send_punishment_for_message(event)
 

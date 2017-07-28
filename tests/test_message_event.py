@@ -5,7 +5,7 @@ from tests import data
 
 class TestMessageEvent(unittest.TestCase):
     def test_json_detected(self):
-        self.assertTrue(MessageEvent.is_message_event(data.valid_message_event_json))
+        self.assertTrue(MessageEvent.is_message_event(data.standard_message_event_json))
 
     def test_wrong_json_not_detected(self):
         self.assertFalse(MessageEvent.is_message_event(data.valid_handshake_json))
@@ -15,8 +15,7 @@ class TestMessageEvent(unittest.TestCase):
         self.assertFalse(MessageEvent.is_message_event(data.message_edited_event_json))
 
     def test_message_parsed(self):
-        message = MessageEvent(data.valid_message_event_json)
+        message = MessageEvent(data.standard_message_event_json)
 
-        self.assertEqual(message.text, data.message)
-        self.assertEqual(message.sender, data.sender)
-        self.assertEqual(message.auth_user, data.auth_user)
+        self.assertEqual(message.text, data.message_std)
+        self.assertEqual(message.sender, data.sender_std)

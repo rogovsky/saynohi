@@ -10,4 +10,4 @@ class Ticket:
 
     @staticmethod
     def _create_event_key(event):
-        return event.channel + "_" + event.sender
+        return event.channel

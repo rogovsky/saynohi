@@ -14,7 +14,7 @@ class TestApp(unittest.TestCase):
         self.assertTrue(app.EVENT_API_FIELD_CHALLENGE in response)
 
     def test_message_req_parsing(self):
-        response = app.process_event_request(data.valid_message_event_json)
+        response = app.process_event_request(data.standard_message_event_json)
 
         self.assertIsNotNone(response)
 

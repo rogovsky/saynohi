@@ -2,7 +2,6 @@ from datetime import datetime
 
 from cached_property import cached_property
 
-FIELD_AUTHED_USERS = "authed_users"
 FIELD_EVENT = "event"
 FIELD_TIME = "event_time"
 
@@ -46,7 +45,3 @@ class MessageEvent:
     def time(self):
         event_time_epoch = self.event_root.get(FIELD_TIME)
         return datetime.fromtimestamp(event_time_epoch)
-
-    @cached_property
-    def auth_user(self):
-        return self.event_root.get(FIELD_AUTHED_USERS)[0]

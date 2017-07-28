@@ -35,6 +35,10 @@ class QueueManager:
         except KeyError:
             pass
 
+    def pop_item(self, ticket):
+        """Pop item by ticket, returns None if event was voided"""
+        return self._events_map.pop(ticket.key, None)
+
     def get_item(self, ticket):
         """Get item by ticket, returns None if event was voided"""
-        return self._events_map[ticket.key]
+        return self._events_map.get(ticket.key, None)
