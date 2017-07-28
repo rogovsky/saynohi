@@ -47,14 +47,25 @@ class MessageProcessor:
         self._processor.start()
 
     def process_incoming_event(self, event_json):
-        """@:param message_event json representing slack message.im event"""
+        """:param event_json: json representing slack message.im event"""
         if not MessageEvent.is_message_event(event_json):
+            print("Got hidden event")
             return
 
         event = MessageEvent(event_json)
-        print("Got message :", event.text)
-        if HiDetector.is_greeting(event.text):
-            self._queue_manager.add(Ticket.of_event(event), event)
+        ticket = Ticket.of_event(event)
+        existing_event = self._queue_manager.get_item(ticket)
+        if existing_event and \
+                (existing_event.sender != event.sender or not HiDetector.is_greeting(event.text)):
+            print("Got message that voids existing one")
+            # Any answer to HI message should void the ticket
+            # any following non HI message from same user should void ticket as well
+            self._queue_manager.void(ticket)
+        elif HiDetector.is_greeting(event.text):
+            print("Got HI message :", event.text)
+            self._queue_manager.add(ticket, event)
+        else:
+            print("Got standard message :", event.text)
 
     def process_ticket(self, ticket):
         """Process ticket related to handled Hi message, if it's not voided sender should receive his punishment"""

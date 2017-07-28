@@ -19,9 +19,9 @@ class QueueManager:
         try:
             self._tickets.put_nowait(ticket)
             self._events_map[ticket.key] = event
-            print("Added to processing :", event.text, str(event.time))
+            print("Added to queue :", event.text, str(event.time))
         except Full:
-            print("Failed to add event. Queue is full")
+            print("Failed to add event to queue. Queue is full")
 
     def get_next_ticket(self):
         """Get next ticket from queue"""

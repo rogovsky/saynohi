@@ -40,6 +40,11 @@ sender_hi = 'U03GALK02'
 message_hi = 'Hi'
 hi_message_event_json = json.loads(MESSAGE_FORMAT % (sender_hi, message_hi, channel_hi))
 
+thread_hi_message_json = json.loads(MESSAGE_FORMAT % (sender_hi, message_hi, channel_hi))
+thread_following_message_json = json.loads(MESSAGE_FORMAT % (sender_hi, message_std, channel_hi))
+thread_answer_hi_message_json = json.loads(MESSAGE_FORMAT % (sender_std, message_hi, channel_hi))
+thread_answer_message_json = json.loads(MESSAGE_FORMAT % (sender_std, message_std, channel_hi))
+
 message_edited_event_json = json.loads('{"token":"Qw671KoWqDm3iv2ok3leR9Ko","team_id":"T03G61VPV",\
            "api_app_id":"A69BQ5S2Z","event":{"type":"message","message":{"type":"message","user":"U03GALK02",\
            "text":"Hi","edited":{"user":"U03GALK02","ts":"1501039832.000000"},"ts":"1501039808.189255"},\
