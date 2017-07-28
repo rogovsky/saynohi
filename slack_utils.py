@@ -11,9 +11,9 @@ def init(api_key):
 
 def send_message(user_id, text):
     try:
-        # slack_client.chat.post_message(user_id, #uncomment once we debug everything
         # slack_client.chat.post_message("U03GALK02",  # dsitnikov user
-        slack_client.chat.post_message("D03GALK0C",  # dsitnikov chat
+        # slack_client.chat.post_message("D03GALK0C",  # dsitnikov chat
+        slack_client.chat.post_message(user_id,  # uncomment for production version
                                        text,
                                        as_user=False)
         user_name = get_slack_name_by_id(user_id)
