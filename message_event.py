@@ -50,7 +50,3 @@ class MessageEvent:
     @cached_property
     def auth_user(self):
         return self.event_root.get(FIELD_AUTHED_USERS)[0]
-
-    @cached_property
-    def is_incoming(self):
-        return self.sender != self.auth_user

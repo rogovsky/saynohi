@@ -20,4 +20,3 @@ class TestMessageEvent(unittest.TestCase):
         self.assertEqual(message.text, data.message)
         self.assertEqual(message.sender, data.sender)
         self.assertEqual(message.auth_user, data.auth_user)
-        self.assertTrue(message.is_incoming)

@@ -89,7 +89,7 @@ def process_event_api_request(req):
 
 def process_event_request(req):
     """Process even received request from Slack Events API"""
-    message_processor.process(req)
+    message_processor.process_event(req)
     return {}
 
 
