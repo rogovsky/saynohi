@@ -59,3 +59,47 @@ class TestMessageProcessor(unittest.TestCase):
         # check
         self.processor._queue_manager.add.assert_not_called()
         self.processor._queue_manager.void.assert_called_once_with(mock.ANY)
+
+    def test_hi_edited_to_another_hi_doesnt_void_it(self):
+        # add one real message then mock the receiver
+        self.processor.process_incoming_event(data.thread_hi_message_json)
+        self.processor._queue_manager.add = MagicMock()
+        self.processor._queue_manager.void = MagicMock()
+        # add answer to it
+        self.processor.process_incoming_event(data.message_changed_hi_to_hi_event_json)
+        # check
+        self.processor._queue_manager.add.assert_not_called()
+        self.processor._queue_manager.void.assert_not_called()
+
+    def test_hi_edited_to_standard_text_voids_hi(self):
+        # add one real message then mock the receiver
+        self.processor.process_incoming_event(data.thread_hi_message_json)
+        self.processor._queue_manager.add = MagicMock()
+        self.processor._queue_manager.void = MagicMock()
+        # add answer to it
+        self.processor.process_incoming_event(data.message_changed_hi_to_std_event_json)
+        # check
+        self.processor._queue_manager.add.assert_not_called()
+        self.processor._queue_manager.void.assert_called_once_with(mock.ANY)
+
+    def test_hi_deleted_voids_hi(self):
+        # add one real message then mock the receiver
+        self.processor.process_incoming_event(data.thread_hi_message_json)
+        self.processor._queue_manager.add = MagicMock()
+        self.processor._queue_manager.void = MagicMock()
+        # add answer to it
+        self.processor.process_incoming_event(data.message_deleted_hi_event_json)
+        # check
+        self.processor._queue_manager.add.assert_not_called()
+        self.processor._queue_manager.void.assert_called_once_with(mock.ANY)
+
+    def test_following_messages_in_another_channel_doesnt_void_old_one(self):
+        # add one real message then mock the receiver
+        self.processor.process_incoming_event(data.thread_hi_message_json)
+        self.processor._queue_manager.add = MagicMock()
+        self.processor._queue_manager.void = MagicMock()
+        # add answer to it
+        self.processor.process_incoming_event(data.standard_message_in_another_channel_event_json)
+        # check
+        self.processor._queue_manager.add.assert_not_called()
+        self.processor._queue_manager.void.assert_not_called()

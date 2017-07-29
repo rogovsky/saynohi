@@ -9,7 +9,7 @@ from tests import data
 
 class TestQueueManager(unittest.TestCase):
     def setUp(self):
-        self.message_event1 = MessageEvent(data.standard_message_event_json)
+        self.message_event1 = MessageEvent(data.standard_message_in_another_channel_event_json)
         self.message_event2 = MessageEvent(data.hi_message_event_json)
         self.queue_manager = QueueManager()
         self.ticket1 = Ticket.of_event(self.message_event1)
