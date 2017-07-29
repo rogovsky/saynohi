@@ -26,6 +26,7 @@ class ProcessingThread(Thread):
             ticket = self._queue_manager.get_next_ticket()
             self._sleep_till_time_to_proceed(ticket)
             self._processor.process_ticket(ticket)
+            self._queue_manager.task_done()
 
     @staticmethod
     def _sleep_till_time_to_proceed(ticket):

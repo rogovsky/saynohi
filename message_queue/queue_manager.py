@@ -27,6 +27,10 @@ class QueueManager:
         """Get next ticket from queue"""
         return self._tickets.get()
 
+    def task_done(self):
+        """Tell queue manager that ticket was processed."""
+        self._tickets.task_done()
+
     def void(self, ticket):
         """Erase event
         Keeps ticket in the queue but void the event itself"""
