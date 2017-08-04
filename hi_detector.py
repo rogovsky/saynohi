@@ -1,4 +1,3 @@
-
 import re
 
 _known_greetings = ("hi", "hello", "greetings", "hi there", "hi how are you", "salut",
