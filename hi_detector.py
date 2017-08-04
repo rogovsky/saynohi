@@ -1,7 +1,8 @@
+
 import re
 
 _known_greetings = ("hi", "hello", "greetings", "hi there", "hi how are you", "salut",
-                    "привет", "хай", "здарова", "здорово", "привет как дела")
+                    "привет", "хай", "здарова", "здорово", "привет как дела", "салют", "хопчик", "прив")
 _punctuation_pattern = r"[.,:;()!?/\-\\]"
 
 
