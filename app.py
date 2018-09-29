@@ -14,7 +14,7 @@ import configuration
 import slack_utils
 from message_processor import MessageProcessor
 
-SAYNOHI_HOMEPAGE = "https://distillery-tech.slack.com/apps/A69BQ5S2Z-say-no-hi"
+SAYNOHI_HOMEPAGE = "http://slack.com/apps/A69BQ5S2Z-say-no-hi"
 
 EVENT_API_FIELD_TYPE = "type"
 EVENT_API_FIELD_TOKEN = "token"
