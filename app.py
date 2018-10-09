@@ -138,7 +138,7 @@ def parse_auth_response(auth_response, response_content):
             user_id = response.get("user_id")
             team_name = response.get("team_name")
             print("Authenticated user %s with token: ***%s in team: %s/%s" % (
-                user_id, access_token[:4], team_id, team_name))
+                user_id, access_token[:6], team_id, team_name))
         else:
             print("Auth request error. Get: ", response_content)
     else:
