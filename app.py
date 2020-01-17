@@ -14,7 +14,7 @@ import configuration
 import slack_utils
 from message_processor import MessageProcessor
 
-SAYNOHI_HOMEPAGE = "https://distillery-tech.slack.com/apps/A69BQ5S2Z-say-no-hi"
+SAYNOHI_HOMEPAGE = "http://slack.com/apps/A69BQ5S2Z-say-no-hi"
 
 EVENT_API_FIELD_TYPE = "type"
 EVENT_API_FIELD_TOKEN = "token"
@@ -138,7 +138,7 @@ def parse_auth_response(auth_response, response_content):
             user_id = response.get("user_id")
             team_name = response.get("team_name")
             print("Authenticated user %s with token: ***%s in team: %s/%s" % (
-                user_id, access_token[:4], team_id, team_name))
+                user_id, access_token[:6], team_id, team_name))
         else:
             print("Auth request error. Get: ", response_content)
     else:
